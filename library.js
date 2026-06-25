@@ -16,9 +16,10 @@ async function uploadFile() {
     return;
   }
 
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+  const fileExt = file.name.split(".").pop().toLowerCase();
+  const allowedExt = ["jpg", "jpeg", "png", "webp", "heic", "heif", "pdf"];
 
-  if (!allowedTypes.includes(file.type)) {
+  if (!allowedExt.includes(fileExt)) {
     msg.innerHTML = "Only photos and PDF files are allowed.";
     return;
   }
@@ -30,7 +31,7 @@ async function uploadFile() {
 
   const { error: uploadError } = await supabase.storage
     .from("library")
-    .upload(fileName, file);
+    .upload(fileName, file, { upsert: true });
 
   if (uploadError) {
     msg.innerHTML = "Upload error: " + uploadError.message;
@@ -45,13 +46,11 @@ async function uploadFile() {
 
   const { error } = await supabase
     .from("library")
-    .insert([
-      {
-        title: title,
-        description: description,
-        file_url: publicUrl
-      }
-    ]);
+    .insert([{
+      title,
+      description,
+      file_url: publicUrl
+    }]);
 
   if (error) {
     msg.innerHTML = "Database error: " + error.message;
@@ -88,16 +87,20 @@ async function loadFiles() {
   container.innerHTML = "";
 
   data.forEach(item => {
-    const isImage = item.file_url.match(/\.(jpg|jpeg|png|webp)$/i);
+    const url = item.file_url || "";
+    const isImage = url.match(/\.(jpg|jpeg|png|webp)$/i);
+    const isHeic = url.match(/\.(heic|heif)$/i);
 
     container.innerHTML += `
       <div class="card" style="margin-top:20px">
         <h3>${item.title}</h3>
         <p>${item.description || ""}</p>
 
-        ${isImage ? `<img src="${item.file_url}" style="max-width:100%;border-radius:15px;margin:10px 0">` : `<p>📄 PDF File</p>`}
+        ${isImage ? `<img src="${url}" style="max-width:100%;border-radius:15px;margin:10px 0">` : ""}
+        ${isHeic ? `<p>📷 iPhone photo file</p>` : ""}
+        ${url.match(/\.pdf$/i) ? `<p>📄 PDF File</p>` : ""}
 
-        <a href="${item.file_url}" target="_blank">
+        <a href="${url}" target="_blank">
           <button class="btn">Open File</button>
         </a>
       </div>
