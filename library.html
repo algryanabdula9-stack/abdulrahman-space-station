@@ -24,7 +24,7 @@
 
   <section class="card form">
     <h1>📚 My Library</h1>
-    <p>Add a photo from the camera/gallery or upload a PDF file.</p>
+    <p>Add a photo from the gallery or upload a PDF file.</p>
 
     <label>Title</label>
     <input id="title" placeholder="Example: My Mars Book">
@@ -33,7 +33,11 @@
     <textarea id="description" placeholder="What is this file about?"></textarea>
 
     <label>Choose photo or PDF</label>
-    <input id="fileInput" type="file" accept="image/*,application/pdf">
+    <input 
+      id="fileInput" 
+      type="file" 
+      accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf"
+    >
 
     <br><br>
     <button class="btn" onclick="uploadFile()">Upload File</button>
