@@ -5,32 +5,48 @@
 <title>Login</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body style="font-family:Arial;background:#06142c;color:white;text-align:center;padding:40px">
 <h1>🚀 Abdulrahman Login</h1>
 
-<input id="email" placeholder="Email" style="padding:12px;width:280px"><br><br>
+<input id="email" type="email" placeholder="Email" style="padding:12px;width:280px"><br><br>
 <input id="password" type="password" placeholder="Password" style="padding:12px;width:280px"><br><br>
+
 <button onclick="login()" style="padding:12px 30px">Login</button>
 
-<p id="msg"></p>
+<p id="msg" style="color:#ffc857;margin-top:20px"></p>
 
 <script>
 const SUPABASE_URL = "https://sdorqlfwhuefepjhknxj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_YzuKCGs9UUuq8BQpo6rbaQ_GIpvkHvi";
+
+const SUPABASE_KEY = "ضع هنا anon public key الذي يبدأ بـ eyJhbGci";
+
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function login(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const msg = document.getElementById("msg");
+  msg.innerText = "Checking login...";
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  if(error){
-    document.getElementById("msg").innerText = error.message;
+  if(!email || !password){
+    msg.innerText = "Please enter email and password.";
     return;
   }
 
-  location.href = "journal.html";
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if(error){
+    msg.innerText = "Login failed: " + error.message;
+    return;
+  }
+
+  msg.innerText = "Login successful. Opening journal...";
+  window.location.href = "./journal.html";
 }
 </script>
 </body>
