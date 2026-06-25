@@ -1,5 +1,22 @@
 # Abdulrahman Explorer's Club
 
-A personal space-themed web app for Abdulrahman: journal, memories, library, profile, and NASA page.
+A personal space-themed web app for Abdulrahman.
 
-Built with HTML, CSS, JavaScript, GitHub Pages, and Supabase.
+## Features
+- Space-themed home page
+- Supabase login
+- Journal saved in Supabase
+- Memories page
+- Library links
+- NASA APOD and daily quiz
+
+## Main files
+- index.html
+- login.html
+- journal.html
+- memories.html
+- library.html
+- nasa.html
+- profile.html
+- css/style.css
+- js/*.js

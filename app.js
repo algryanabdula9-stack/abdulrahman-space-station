@@ -1,8 +1,4 @@
-function stamp(){return new Date().toLocaleString()}
-async function protectNav(){
-  if(typeof db === 'undefined') return;
-  const user = await getUser();
-  const authLink = document.getElementById('authLink');
-  if(authLink){ authLink.textContent = user ? 'Logout' : 'Login'; authLink.href = user ? '#' : 'login.html'; if(user) authLink.onclick = logout; }
-}
-protectNav();
+document.addEventListener('DOMContentLoaded',()=>{
+  const path=location.pathname.split('/').pop()||'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a=>{ if(a.getAttribute('href')===path) a.classList.add('active'); });
+});
