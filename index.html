@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abdulrahman Explorer's Club</title>
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Arial, sans-serif;
+      color:white;
+      background:
+        radial-gradient(circle at left 45%, rgba(255,185,70,.7), transparent 13%),
+        radial-gradient(circle at right 18%, rgba(255,255,255,.9), transparent 7%),
+        linear-gradient(180deg,#030816,#071a35 60%,#020713);
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:radial-gradient(#fff 1px,transparent 1px);
+      background-size:80px 80px;
+      opacity:.45;
+      pointer-events:none;
+    }
+    body:after{
+      content:"";
+      position:fixed;
+      left:-10%;
+      right:-10%;
+      bottom:-25%;
+      height:42%;
+      background:radial-gradient(ellipse at center top,#244d88,transparent 55%);
+      border-radius:50% 50% 0 0;
+      pointer-events:none;
+    }
+    .rocket{
+      position:fixed;
+      right:7%;
+      top:28%;
+      font-size:80px;
+      transform:rotate(-18deg);
+      filter:drop-shadow(0 0 20px #ffb347);
+    }
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:1180px;
+      margin:auto;
+      padding:24px;
+    }
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:18px 24px;
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:26px;
+      background:rgba(3,10,25,.75);
+      backdrop-filter:blur(14px);
+    }
+    .logo{
+      font-weight:bold;
+      font-size:22px;
+    }
+    .logo span{
+      display:block;
+      color:#ffc857;
+      font-size:14px;
+      margin-top:4px;
+    }
+    .links{
+      display:flex;
+      gap:22px;
+      flex-wrap:wrap;
+    }
+    .links a{
+      color:white;
+      text-decoration:none;
+      opacity:.9;
+    }
+    .links a.active{
+      color:#ffc857;
+    }
+    .hero{
+      margin-top:110px;
+      max-width:620px;
+    }
+    h1{
+      font-size:52px;
+      margin:0 0 16px;
+    }
+    h2{
+      color:#9fb2ff;
+      margin:0 0 20px;
+    }
+    p{
+      color:#dce6ff;
+      line-height:1.7;
+      font-size:19px;
+    }
+    .cards{
+      margin-top:90px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:20px;
+    }
+    .card{
+      min-height:210px;
+      padding:28px;
+      border-radius:24px;
+      background:rgba(6,18,42,.76);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter:blur(14px);
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+    }
+    .icon{
+      font-size:42px;
+      margin-bottom:18px;
+    }
+    .card h3{
+      font-size:24px;
+      margin:0 0 12px;
+    }
+    .footer{
+      margin:50px auto 120px;
+      max-width:600px;
+      text-align:center;
+      padding:18px;
+      border-radius:24px;
+      background:rgba(3,12,30,.75);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    @media(max-width:800px){
+      nav{flex-direction:column;align-items:flex-start;gap:16px}
+      h1{font-size:38px}
+      .cards{grid-template-columns:1fr}
+      .rocket{font-size:55px;opacity:.65}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rocket">🚀</div>
+
+  <div class="wrap">
+    <nav>
+      <div class="logo">
+        🚀 Abdulrahman
+        <span>Explorer's Club</span>
+      </div>
+
+      <div class="links">
+        <a class="active" href="#">Home</a>
+        <a href="#">Journal</a>
+        <a href="#">Memories</a>
+        <a href="#">NASA</a>
+        <a href="#">Library</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>Welcome, Abdulrahman! ⭐</h1>
+      <h2>Dream • Explore • Discover</h2>
+      <p>
+        This is your special space to explore science, NASA, video games,
+        animal care, memories, goals, and everything you love to learn.
+      </p>
+    </section>
+
+    <section class="cards">
+      <div class="card">
+        <div class="icon">📔</div>
+        <h3>My Journal</h3>
+        <p>Write your thoughts, ideas, and daily adventures.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">🖼️</div>
+        <h3>My Memories</h3>
+        <p>Save your favorite moments and beautiful memories.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">🌌</div>
+        <h3>NASA & Space</h3>
+        <p>Discover planets, rockets, missions, and amazing space facts.</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      💙 Keep exploring, keep dreaming! 🚀
+    </div>
+  </div>
+</body>
+</html>
