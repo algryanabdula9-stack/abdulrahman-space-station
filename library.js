@@ -1,19 +1,106 @@
-let libUser=null;
-async function initLibrary(){libUser=await requireLogin(); if(!libUser)return; loadLibrary();}
-async function saveLibraryItem(){
- const msg=document.getElementById('msg'); msg.textContent='Saving...';
- const title=document.getElementById('libTitle').value.trim();
- const description=document.getElementById('libDesc').value.trim();
- const file_url=document.getElementById('libUrl').value.trim();
- if(!title||!file_url){msg.textContent='Please add title and file link.';return;}
- const {error}=await db.from('library').insert({title,description,file_url});
- if(error){msg.textContent='Error: '+error.message;return;}
- msg.textContent='Saved to library 📚'; document.getElementById('libTitle').value='';document.getElementById('libDesc').value='';document.getElementById('libUrl').value=''; loadLibrary();
+const SUPABASE_URL = "https://sdorqlfwhuefepjhknxj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YzuKCGs9UUuq8BQpo6rbaQ_GIpvkHvi";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+loadFiles();
+
+async function uploadFile() {
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const file = document.getElementById("fileInput").files[0];
+  const msg = document.getElementById("msg");
+
+  if (!title || !file) {
+    msg.innerHTML = "Please enter title and choose a photo or PDF.";
+    return;
+  }
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+
+  if (!allowedTypes.includes(file.type)) {
+    msg.innerHTML = "Only photos and PDF files are allowed.";
+    return;
+  }
+
+  msg.innerHTML = "Uploading...";
+
+  const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const fileName = Date.now() + "_" + safeFileName;
+
+  const { error: uploadError } = await supabase.storage
+    .from("library")
+    .upload(fileName, file);
+
+  if (uploadError) {
+    msg.innerHTML = "Upload error: " + uploadError.message;
+    return;
+  }
+
+  const { data } = supabase.storage
+    .from("library")
+    .getPublicUrl(fileName);
+
+  const publicUrl = data.publicUrl;
+
+  const { error } = await supabase
+    .from("library")
+    .insert([
+      {
+        title: title,
+        description: description,
+        file_url: publicUrl
+      }
+    ]);
+
+  if (error) {
+    msg.innerHTML = "Database error: " + error.message;
+    return;
+  }
+
+  msg.innerHTML = "✅ File uploaded successfully.";
+
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("fileInput").value = "";
+
+  loadFiles();
 }
-async function loadLibrary(){
- const box=document.getElementById('libraryItems'); box.innerHTML='<p>Loading...</p>';
- const {data,error}=await db.from('library').select('*').order('created_at',{ascending:false});
- if(error){box.innerHTML='<p class="warning">'+error.message+'</p>';return;}
- box.innerHTML=(data&&data.length)?data.map(i=>`<div class="entry"><h3>${i.title}</h3><p>${i.description||''}</p><a class="btn secondary" href="${i.file_url}" target="_blank">Open File</a><br><small>${new Date(i.created_at).toLocaleString()}</small></div>`).join(''):'<p>No library files yet.</p>';
+
+async function loadFiles() {
+  const container = document.getElementById("items");
+
+  const { data, error } = await supabase
+    .from("library")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    container.innerHTML = "Load error: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = "<p>No files yet.</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  data.forEach(item => {
+    const isImage = item.file_url.match(/\.(jpg|jpeg|png|webp)$/i);
+
+    container.innerHTML += `
+      <div class="card" style="margin-top:20px">
+        <h3>${item.title}</h3>
+        <p>${item.description || ""}</p>
+
+        ${isImage ? `<img src="${item.file_url}" style="max-width:100%;border-radius:15px;margin:10px 0">` : `<p>📄 PDF File</p>`}
+
+        <a href="${item.file_url}" target="_blank">
+          <button class="btn">Open File</button>
+        </a>
+      </div>
+    `;
+  });
 }
-document.addEventListener('DOMContentLoaded',initLibrary);
