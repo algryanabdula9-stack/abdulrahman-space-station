@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="font-family:Arial;background:#06142c;color:white;text-align:center;padding:40px">
+<h1>🚀 Abdulrahman Login</h1>
+
+<input id="email" placeholder="Email" style="padding:12px;width:280px"><br><br>
+<input id="password" type="password" placeholder="Password" style="padding:12px;width:280px"><br><br>
+<button onclick="login()" style="padding:12px 30px">Login</button>
+
+<p id="msg"></p>
+
+<script>
+const SUPABASE_URL = "https://sdorqlfwhuefepjhknxj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YzuKCGs9UUuq8BQpo6rbaQ_GIpvkHvi";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if(error){
+    document.getElementById("msg").innerText = error.message;
+    return;
+  }
+
+  location.href = "journal.html";
+}
+</script>
+</body>
+</html>
