@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Journal</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="font-family:Arial;background:#06142c;color:white;padding:30px">
+<h1>📔 My Journal</h1>
+
+<button onclick="logout()">Logout</button>
+
+<br><br>
+
+<input id="title" placeholder="Title" style="padding:12px;width:100%;max-width:500px"><br><br>
+
+<select id="category" style="padding:12px;width:100%;max-width:500px">
+  <option>Blog Post</option>
+  <option>Beautiful Memory</option>
+  <option>Future Goal</option>
+</select><br><br>
+
+<textarea id="content" placeholder="Write here..." style="padding:12px;width:100%;max-width:500px;height:160px"></textarea><br><br>
+
+<button onclick="saveEntry()" style="padding:12px 30px">Save Entry</button>
+
+<h2>Saved Entries</h2>
+<div id="entries"></div>
+
+<script>
+const SUPABASE_URL = "https://sdorqlfwhuefepjhknxj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YzuKCGs9UUuq8BQpo6rbaQ_GIpvkHvi";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+
+async function checkUser(){
+  const { data } = await supabase.auth.getUser();
+  if(!data.user){
+    location.href = "login.html";
+    return;
+  }
+  currentUser = data.user;
+  loadEntries();
+}
+
+async function saveEntry(){
+  const title = document.getElementById("title").value.trim();
+  const category = document.getElementById("category").value;
+  const content = document.getElementById("content").value.trim();
+
+  if(!title || !content){
+    alert("Please write title and content.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("journal_entries")
+    .insert({
+      title,
+      category,
+      content,
+      user_id: currentUser.id
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  document.getElementById("title").value = "";
+  document.getElementById("content").value = "";
+  loadEntries();
+}
+
+async function loadEntries(){
+  const { data, error } = await supabase
+    .from("journal_entries")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(error){
+    document.getElementById("entries").innerHTML = error.message;
+    return;
+  }
+
+  document.getElementById("entries").innerHTML = data.map(e => `
+    <div style="background:rgba(255,255,255,.08);padding:15px;margin:12px 0;border-radius:15px">
+      <b>${e.category}</b>
+      <h3>${e.title}</h3>
+      <p>${e.content}</p>
+      <small>${new Date(e.created_at).toLocaleString()}</small>
+    </div>
+  `).join("");
+}
+
+async function logout(){
+  await supabase.auth.signOut();
+  location.href = "login.html";
+}
+
+checkUser();
+</script>
+</body>
+</html>
